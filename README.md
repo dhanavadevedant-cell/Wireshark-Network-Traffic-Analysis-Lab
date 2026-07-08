@@ -9,31 +9,22 @@ The lab focuses on two core cybersecurity disciplines:
 
 ---
 
-## 🛠️ Lab Architecture & Tools
-* **Hypervisor:** Oracle VirtualBox (Expert Mode)
-* **Operating Systems:** Kali Linux (Attacker/Analyst Platform), Windows/Other Target Node
-* **Networking Topology:** Isolated Host-Only Private Network (Sandbox)
-* **Key Software:** Wireshark v4.x, Nmap v7.x
-
----
-
 ## 🔬 Lab Diary & Analysis Scenarios
 
 ### Section 1: Baseline Traffic & Advanced Reconnaissance Detection (Task 1)
 
-#### Initial Baseline Capture
-The project began by monitoring routine background chatter on interface `eth0`, establishing normal runtime protocol operations (e.g., LLMNR and ICMPv6).
-
 #### Detecting an Active Port Scan Attack
-I simulated an aggressive Nmap SYN Stealth Scan against the target gateway.
+I simulated an aggressive Nmap SYN Stealth Scan against the target gateway. Wireshark registered a massive flood of incoming `[SYN]` packets targeting dozens of random destination ports within milliseconds.
 
-**Forensic Findings (The Intrusion Signature):**
-Wireshark registered a massive flood of incoming `[SYN]` packets targeting dozens of random destination ports within milliseconds. This rapid-fire sequential probing is the hallmark of a reconnaissance scan. I utilized the Boolean hexadecimal filter `tcp.flags == 0x012` to isolate all `[SYN, ACK]` responses, definitively confirming that the target system was exposed and listening on Port 3306 (MySQL).
+I utilized the Boolean hexadecimal filter `tcp.flags == 0x012` to isolate all `[SYN, ACK]` responses, definitively confirming that the target system was exposed and listening on Port 3306 (MySQL).
 
 #### Evidence Acquisition:
-I isolated the target responses using the hex filter. The results confirm that Port 3306 was open and listening for a MySQL database connection, providing an actionable attack vector.
 
-| ![Raw Intrusion Flood](Screenshot 2026-07-08 201103.png) | ![Filtered Open Services](Screenshot 2026-07-07 221449.png) |
+| Nmap Stealth SYN Scan | Isolate Confirmed OPEN Ports |
+|---|---|
+| ![Raw Intrusion Flood](Screenshot%202026-07-08%20201103.png) | ![Filtered Open Services](Screenshot%202026-07-07%20221449.png) |
+
+This visual data flow confirms that after filtering out ordinary noise, the target system admitted Port 3306 was OPEN and listening for a MySQL database connection, providing the critical vector for a secondary attack.
 
 ---
 
@@ -42,10 +33,7 @@ I isolated the target responses using the hex filter. The results confirm that P
 #### Security Recommendation: The Critical Finding
 This exercise definitively proved that over an unencrypted HTTP connection (Port 80/8000), user credentials (username and password) are transmitted in plaintext within the request body. Utilizing Wireshark's built-in stream analysis, I successfully reconstructed the conversation and extracted the raw exposed data.
 
-| Protocol | State | Finding | Risk Assessment |
-|:---|:---|:---|:---|
-| **HTTP** | Unencrypted | **Password Harvested** | **HIGH** |
-
 #### Evidence Acquisition (The Leak):
 I instantiated a local mock web server on Port 8000 and simulated a login POST request containing a sample password. By applying the display filter `http.request.method == "POST"` on the loopback interface and following the HTTP stream, I was able to cleanly extract the raw credentials in plaintext:
-![Credential Leak Captured](Screenshot 2026-07-08 135723.jpg)
+
+![Credential Leak Captured](Screenshot%202026-07-08%20135723.jpg)
