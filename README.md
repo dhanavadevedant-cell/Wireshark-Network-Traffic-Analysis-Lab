@@ -34,7 +34,7 @@ Wireshark registered a massive flood of incoming `[SYN]` packets targeting dozen
 
 | Nmap Stealth SYN Scan (02_syn_scan_flood.png) | Isolate Confirmed OPEN Ports (03_filtered_port_3306.png) |
 |---|---|
-| ![Raw Intrusion Flood](screenshots/02_syn_scan_flood.png) | ![Filtered Open Services](screenshots/03_filtered_port_3306.png) |
+| | ![Raw Intrusion Flood](Screenshot 2026-07-08 132502.png) | ![Filtered Open Services](Screenshot 2026-07-07 221449.png) |
 
 This visual data flow confirms that after filtering out ordinary noise, the target system admitted Port 3306 was OPEN and listening for a MySQL database connection, providing the critical vector for a secondary attack.
 
@@ -55,4 +55,4 @@ I instantiated a local mock web server on Port 8000 and simulated a login POST r
 
 Following the HTTP POST stream for TCP session 0 reveals that the credentials `user=admin&pass=Secret123` were sent in pure readable plaintext, entirely bypassing standard confidentiality expectations. This vulnerability definitively validates the necessity of enforcing cryptographic protocol baselines (HTTPS/TLS).
 
-![Credential Leak Captured](screenshots/05_credential_leak.png)
+![Credential Leak Captured](Screenshot 2026-07-08 135723.jpg)
