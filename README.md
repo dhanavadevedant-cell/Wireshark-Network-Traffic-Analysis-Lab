@@ -33,7 +33,7 @@ Wireshark registered a massive flood of incoming `[SYN]` packets targeting dozen
 #### Evidence Acquisition:
 I isolated the target responses using the hex filter. The results confirm that Port 3306 was open and listening for a MySQL database connection, providing an actionable attack vector.
 
-![Filtered Open Services](Screenshot%202026-07-07%20221449.png)
+| ![Raw Intrusion Flood](Screenshot 2026-07-08 201103.png) | ![Filtered Open Services](Screenshot 2026-07-07 221449.png) |
 
 ---
 
@@ -48,5 +48,4 @@ This exercise definitively proved that over an unencrypted HTTP connection (Port
 
 #### Evidence Acquisition (The Leak):
 I instantiated a local mock web server on Port 8000 and simulated a login POST request containing a sample password. By applying the display filter `http.request.method == "POST"` on the loopback interface and following the HTTP stream, I was able to cleanly extract the raw credentials in plaintext:
-
-![Credential Leak Captured](Screenshot%202026-07-08%20135723_2.jpg)
+![Credential Leak Captured](Screenshot 2026-07-08 135723.jpg)
