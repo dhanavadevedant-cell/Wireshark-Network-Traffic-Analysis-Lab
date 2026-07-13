@@ -35,7 +35,7 @@ This exercise definitively proved that over an unencrypted HTTP connection (Port
 #### Evidence Acquisition (The Leak):
 I instantiated a local mock web server on Port 8000 and simulated a login POST request containing a sample password. By applying the display filter `http.request.method == "POST"` on the loopback interface and following the HTTP stream, I was able to cleanly extract the raw credentials in plaintext:
 
-![Empty Capture on eth0](04_empty_eth0_capture.png)
+![Credential Leak Captured](05_credential_leak.png)
 
 ---
 
