@@ -13,8 +13,8 @@ This project documents the design and execution of an isolated network security 
 I simulated an aggressive Nmap SYN Stealth Scan against the target gateway. Wireshark registered a massive, rapid-fire flood of incoming `[SYN]` packets targeting dozens of random destination ports within milliseconds. 
 
 When the scanning utility hit closed ports, the target gateway actively responded with **`[RST]` (Reset)** flags to terminate the connection attempts, mapping out the unavailable infrastructure:
+![Filtered Reset Flags](02_Reset_flags.png)
 
-![Nmap SYN Scan and RST Responses](Screenshot%202026-07-07%20220011.png)
 
 #### Forensic Findings (The Intrusion Signature)
 To isolate the critical data from the scanning noise, I utilized the Boolean hexadecimal filter `tcp.flags == 0x012`. This precisely filtered for all **`[SYN, ACK]`** responses, definitively confirming that the target system was exposed and listening on **Port 3306 (MySQL)**.
