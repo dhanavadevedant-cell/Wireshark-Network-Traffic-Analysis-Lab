@@ -1,4 +1,3 @@
-
 # 🛡️ Advanced Network Traffic Monitoring & Security Analysis Lab
 
 ## 📌 Project Overview
@@ -8,15 +7,12 @@ This project documents the design and execution of an isolated network security 
 
 ## 🔬 Lab Diary & Analysis Scenarios
 
-### Section 1: Advanced Reconnaissance Detection (Task 1)
-
-#### Initial Analysis & Environment Calibration
-I initialized the analysis environment by validating the Host-Only interface (`eth0`) configuration and establishing a capture baseline.
-
-![Validating the eth0 Interface](Screenshot%202026-07-08%20130150.jpg)
+### Section 1: Baseline Traffic & Advanced Reconnaissance Detection (Task 1)
 
 #### Detecting an Active Port Scan Attack
-I simulated an aggressive Nmap SYN Stealth Scan against the target gateway. Wireshark registered a massive flood of incoming `[SYN]` packets targeting dozens of random destination ports within milliseconds. This rapid-fire sequential probing is the hallmark of a reconnaissance scan.
+I simulated an aggressive Nmap SYN Stealth Scan against the target gateway. Wireshark registered a massive flood of incoming `[SYN]` packets targeting dozens of random destination ports within milliseconds. This is clearly visible in the unfiltered capture showing sequential RST flags:
+
+![Raw Intrusion Flood](Screenshot%202026-07-08%20201103.png)
 
 I utilized the Boolean hexadecimal filter `tcp.flags == 0x012` to isolate all `[SYN, ACK]` responses, definitively confirming that the target system was exposed and listening on Port 3306 (MySQL).
 
@@ -29,15 +25,15 @@ The filtered capture reveals the active, responding network sockets clearly. Con
 
 ### Section 2: Cleartext Credential Harvesting (Task 2)
 
-#### The Interface Diagnostic Challenge
-During the simulation of an unencrypted HTTP login attempt, the initial capture bound to the standard network interface (`eth0`) showed zero incoming data packets, verifying that local host-to-host traffic remains isolated from the main virtual adapter.
+#### Security Recommendation: The Critical Finding
+This exercise definitively proved that over an unencrypted HTTP connection (Port 80/8000), user credentials (username and password) are transmitted in plaintext within the request body. Utilizing Wireshark's built-in stream analysis, I successfully reconstructed the conversation and extracted the raw exposed data.
 
-![Empty Capture on eth0](Screenshot%202026-07-08%20132502.png)
+| Protocol | State | Finding | Risk Assessment |
+|:---|:---|:---|:---|
+| **HTTP** | Unencrypted | **Password Harvested** | **HIGH** |
 
-#### The Loopback Pivot & Exploitation Proof
-To intercept the localized credentials, I successfully shifted the monitoring capture to the internal **Loopback interface (`lo`)**.
-
-By applying the display filter `http.request.method == "POST"` and selecting **Follow HTTP Stream**, I reconstructed the plaintext communication body, exposing the active credentials entirely unencrypted:
+#### Evidence Acquisition (The Leak):
+I instantiated a local mock web server on Port 8000 and simulated a login POST request containing a sample password. By applying the display filter `http.request.method == "POST"` on the loopback interface and following the HTTP stream, I was able to cleanly extract the raw credentials in plaintext:
 
 ![Credential Leak Captured](Screenshot%202026-07-08%20135723.jpg)
 
