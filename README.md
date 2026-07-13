@@ -19,7 +19,7 @@ I utilized the Boolean hexadecimal filter `tcp.flags == 0x012` to isolate all `[
 #### Evidence Acquisition:
 The filtered capture reveals the active, responding network sockets clearly. Confirmed visibility into the victim system's exposed attack surface.
 
-![Credential Leak Captured](05_credential_leak.jpg)
+![Credential Leak Captured](05_credential_leak.png)
 
 ---
 
