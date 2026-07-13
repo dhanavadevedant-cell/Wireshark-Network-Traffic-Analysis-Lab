@@ -12,14 +12,14 @@ This project documents the design and execution of an isolated network security 
 #### Detecting an Active Port Scan Attack
 I simulated an aggressive Nmap SYN Stealth Scan against the target gateway. Wireshark registered a massive flood of incoming `[SYN]` packets targeting dozens of random destination ports within milliseconds. This is clearly visible in the unfiltered capture showing sequential RST flags:
 
-![Raw Intrusion Flood](Screenshot%202026-07-08%20201103.png)
+![Filtered Open Services](03_filtered_port_3306.png)
 
 I utilized the Boolean hexadecimal filter `tcp.flags == 0x012` to isolate all `[SYN, ACK]` responses, definitively confirming that the target system was exposed and listening on Port 3306 (MySQL).
 
 #### Evidence Acquisition:
 The filtered capture reveals the active, responding network sockets clearly. Confirmed visibility into the victim system's exposed attack surface.
 
-![Filtered Open Services](Screenshot%202026-07-07%20221449.png)
+![Credential Leak Captured](05_credential_leak.jpg)
 
 ---
 
